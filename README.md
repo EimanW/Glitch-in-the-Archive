@@ -4,8 +4,7 @@
 > One of them is lying.
 > Find the glitch before history is rewritten.
 
-![banner](docs/banner.png)
-
+<img src="https://github.com/user-attachments/assets/cd952b89-25a0-467d-a5e0-81609f31b0ce" width="200" alt="Glitch in the Archive Logo">
 ---
 
 ##  Play
