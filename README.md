@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/logo.png" width="220" alt="Glitch in the Archive">
+<img src="https://github.com/user-attachments/assets/cd952b89-25a0-467d-a5e0-81609f31b0ce" width="200" alt="Glitch in the Archive Logo">
 </p>
 
 <h1 align="center">GLITCH in the Archive</h1>
