@@ -4,9 +4,16 @@
 > One of them is lying.
 > Find the glitch before history is rewritten.
 
-<img src="https://github.com/user-attachments/assets/cd952b89-25a0-467d-a5e0-81609f31b0ce" width="200" alt="Glitch in the Archive Logo">
----
+<p align="center">
+  <img src="./assets/logo.png" width="220" alt="Glitch in the Archive">
+</p>
 
+<h1 align="center">GLITCH in the Archive</h1>
+
+<p align="center">
+Every document looks authentic. One of them is lying.<br>
+Find the glitch before history is rewritten.
+</p>
 ##  Play
 
 Every day you receive an archival case containing multiple historical documents.
