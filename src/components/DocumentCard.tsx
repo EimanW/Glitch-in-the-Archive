@@ -1,30 +1,30 @@
 import type { CaseDocument } from '../lib/types';
 
-export type Phase = 'pick-doc' | 'pick-sentence' | 'reveal';
+export type Phase = 'investigation' | 'deduction' | 'resolution';
 
 interface Props {
   doc: CaseDocument;
   index: number;
   phase: Phase;
   pickedDoc: number | null;
-  pickedSentence: number | null;
+  pickedSentences: (number | null)[];
   liarDoc: number;
   lieSentence: number;
   onPickDoc: (i: number) => void;
-  onPickSentence: (i: number) => void;
+  onPickSentence: (docIndex: number, sentenceIndex: number) => void;
 }
 
 const TILTS = ['-0.6deg', '0.5deg', '-0.3deg'];
 
 export default function DocumentCard({
-  doc, index, phase, pickedDoc, pickedSentence, liarDoc, lieSentence, onPickDoc, onPickSentence,
+  doc, index, phase, pickedDoc, pickedSentences, liarDoc, lieSentence, onPickDoc, onPickSentence,
 }: Props) {
   const isPicked = pickedDoc === index;
   const isLiar = index === liarDoc;
-  const revealing = phase === 'reveal';
-  const sentencePhase = phase === 'pick-sentence' && isPicked;
-
-  const clickableDoc = phase === 'pick-doc';
+  const revealing = phase === 'resolution';
+  
+  // investigation phase allows interacting with doc
+  const clickableDoc = phase === 'investigation';
 
   return (
     <div
@@ -32,38 +32,53 @@ export default function DocumentCard({
       style={{ ['--tilt' as never]: TILTS[index], transform: `rotate(${TILTS[index]})` }}
     >
       {revealing && isLiar && (
-        <div className="stamp font-blackletter text-3xl sm:text-4xl">FABRICATED</div>
+        <div className="stamp font-mono text-3xl sm:text-4xl">FABRICATED</div>
       )}
       <article
-        className={`paper doc-press relative p-6 sm:p-8 ${clickableDoc ? 'doc-hover cursor-pointer' : ''} ${isPicked && !revealing ? 'doc-selected' : ''} ${revealing && !isLiar ? 'opacity-80' : ''}`}
+        className={`paper relative p-6 sm:p-8 ${clickableDoc ? 'doc-hover cursor-pointer' : ''} ${isPicked && revealing ? 'doc-selected' : ''} ${revealing && !isLiar ? 'opacity-80' : ''}`}
         role={clickableDoc ? 'button' : undefined}
         tabIndex={clickableDoc ? 0 : undefined}
-        aria-label={clickableDoc ? `Accuse document ${index + 1}: ${doc.voice}` : `Document ${index + 1}: ${doc.voice}`}
+        aria-label={`Document ${index + 1}: ${doc.voice}`}
         onClick={() => clickableDoc && onPickDoc(index)}
         onKeyDown={(e) => clickableDoc && (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onPickDoc(index))}
         data-testid={`document-card-${index}`}
       >
         {/* file tab */}
-        <div className="absolute -top-3 start-6 bg-[#d8cdb2] px-3 py-0.5 text-[10px] tracking-[0.2em] text-[#4a4030] shadow-sm">
+        <div className="absolute -top-3 start-6 bg-[#d8cdb2] px-3 py-0.5 font-mono text-[10px] tracking-[0.2em] text-[#4a4030] shadow-sm">
           EXHIBIT {String.fromCharCode(65 + index)}
         </div>
         {/* paperclip */}
         <div className="absolute -top-4 end-8 h-9 w-4 rounded-full border-2 border-[#8a8a92]/70 border-b-transparent" aria-hidden="true" />
 
-        <h3 className="font-heading text-xs tracking-[0.25em] text-[#6b5d45]">{doc.voice}</h3>
-        <div className="mt-3 space-y-2 text-[15px] leading-relaxed">
+        <h3 className="font-mono text-xs tracking-[0.25em] text-[#6b5d45]">{doc.voice}</h3>
+        <div className="mt-3 space-y-2 font-mono text-[14px] leading-relaxed">
           {doc.sentences.map((s, si) => {
             const isLie = revealing && isLiar && si === lieSentence;
-            const pickable = sentencePhase;
-            const wasGuess = revealing && isPicked && pickedSentence === si && !isLie;
+            const isHighlighted = pickedSentences[index] === si;
+            const wasGuess = revealing && isHighlighted;
+            
+            // Allow picking sentences during investigation
+            const pickable = phase === 'investigation';
+            
             return (
               <p key={si}>
                 <span
-                  className={`${pickable ? 'sentence-pick' : ''} ${isLie ? 'ink-wrap font-semibold' : ''} ${wasGuess ? 'line-through decoration-[#8a8a92]' : ''}`}
+                  className={`${pickable ? 'sentence-pick' : ''} ${isLie ? 'ink-wrap font-bold' : ''} ${isHighlighted && !revealing ? 'bg-zinc-800/20 shadow-[0_1px_0_#4a4030]' : ''} ${wasGuess && !isLie ? 'line-through decoration-[#8a8a92]' : ''}`}
                   role={pickable ? 'button' : undefined}
                   tabIndex={pickable ? 0 : undefined}
-                  onClick={() => pickable && onPickSentence(si)}
-                  onKeyDown={(e) => pickable && (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onPickSentence(si))}
+                  onClick={(e) => {
+                    if (pickable) {
+                      e.stopPropagation();
+                      onPickSentence(index, si);
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (pickable && (e.key === 'Enter' || e.key === ' ')) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      onPickSentence(index, si);
+                    }
+                  }}
                   data-testid={`sentence-${index}-${si}`}
                 >
                   {s.text}

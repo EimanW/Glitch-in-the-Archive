@@ -16,37 +16,38 @@ export function downloadShareCard(caseNumber: number, solved: boolean, exact: bo
   ctx.strokeRect(40, 40, 920, 920);
 
   ctx.textAlign = 'center';
-  ctx.fillStyle = '#8a8a92';
-  ctx.font = '28px Georgia, serif';
+  ctx.fillStyle = '#a1a1aa'; // zinc-400
+  ctx.font = '28px monospace';
   ctx.fillText('G L I T C H   I N   T H E   A R C H I V E', 500, 140);
 
-  ctx.fillStyle = '#e8e0cc';
-  ctx.font = 'bold 88px Georgia, serif';
+  ctx.fillStyle = '#f4f4f5'; // zinc-100
+  ctx.font = 'bold 88px monospace';
   ctx.fillText(`CASE #${caseNumber}`, 500, 300);
 
-  ctx.fillStyle = solved ? '#b3001b' : '#8a8a92';
-  ctx.font = 'bold 64px Georgia, serif';
-  ctx.fillText(solved ? (exact ? 'SOLVED — LINE PERFECT' : 'SOLVED') : 'UNSOLVED', 500, 410);
+  ctx.fillStyle = solved ? (exact ? '#4ade80' : '#e4e4e7') : '#ef4444'; // green-400 : zinc-200 : red-500
+  ctx.font = 'bold 64px monospace';
+  ctx.fillText(solved ? (exact ? 'PERFECT DEDUCTION' : 'SOLVED') : 'DECEIVED', 500, 420);
 
-  // wax seal
-  const g = ctx.createRadialGradient(460, 560, 10, 500, 600, 90);
-  g.addColorStop(0, '#d41f3d'); g.addColorStop(0.6, '#b3001b'); g.addColorStop(1, '#7a0013');
-  ctx.fillStyle = g;
-  ctx.beginPath(); ctx.arc(500, 600, 85, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = '#e8e0cc';
-  ctx.font = 'bold 72px Georgia, serif';
-  ctx.fillText('A', 500, 626);
+  // Divider
+  ctx.strokeStyle = '#27272a'; // zinc-800
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(300, 500);
+  ctx.lineTo(700, 500);
+  ctx.stroke();
 
   const rank = rankFor(pointsFor(stats.wins, stats.exactWins, stats.bestStreak));
-  ctx.fillStyle = '#e8e0cc';
-  ctx.font = '40px Georgia, serif';
-  ctx.fillText(`Rank: ${rank.name}`, 500, 780);
-  ctx.fillStyle = '#8a8a92';
-  ctx.font = '32px Georgia, serif';
-  ctx.fillText(`Streak ${stats.streak}   ·   Best ${stats.bestStreak}   ·   Solved ${stats.wins}/${stats.plays}`, 500, 840);
+  ctx.fillStyle = '#f4f4f5';
+  ctx.font = '40px monospace';
+  ctx.fillText(`Rank: ${rank.name}`, 500, 620);
+  
+  ctx.fillStyle = '#a1a1aa';
+  ctx.font = '32px monospace';
+  ctx.fillText(`Streak: ${stats.streak}  |  Solve Rate: ${Math.round((stats.wins / Math.max(1, stats.plays)) * 100)}%`, 500, 720);
 
-  ctx.font = '24px Georgia, serif';
-  ctx.fillText('Can you catch The Archivist?', 500, 920);
+  ctx.fillStyle = '#52525b'; // zinc-600
+  ctx.font = '24px monospace';
+  ctx.fillText('[ CLASSIFIED DOSSIER ]', 500, 900);
 
   const a = document.createElement('a');
   a.download = `glitch-case-${caseNumber}.png`;

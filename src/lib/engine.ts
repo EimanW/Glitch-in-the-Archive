@@ -1,5 +1,5 @@
 import { EVENTS } from '../data/events';
-import type { DailyCase, FactField, HistoricalEvent, Sentence, CaseDocument } from './types';
+import type { DailyCase, FactField, HistoricalEvent, Sentence, CaseDocument, EvidenceCard, ReasoningType } from './types';
 
 /** The archive opened on this UTC date. Case #1. */
 export const EPOCH_ISO = '2026-07-08';
@@ -247,6 +247,58 @@ export function caseForDay(dayIndex: number): DailyCase {
     return { voice: VOICES[vIdx], sentences };
   });
 
+  // reasoning mapping
+  let correctReasoning: ReasoningType = 'other_inconsistency';
+  if (corruptedField === 'year') correctReasoning = 'timeline_mismatch';
+  if (corruptedField === 'person') correctReasoning = 'wrong_historical_figure';
+  if (corruptedField === 'location') correctReasoning = 'wrong_location';
+  if (corruptedField === 'number') correctReasoning = 'suspicious_number';
+  if (corruptedField === 'outcome') correctReasoning = 'motive_does_not_fit';
+
+  // generate 3 evidence cards deterministically
+  const evidenceTypes = shuffled(['timeline', 'witness', 'location', 'context', 'primary_source', 'contradiction'] as const, rng).slice(0, 3);
+  
+  const evidence: EvidenceCard[] = evidenceTypes.map((type, i) => {
+    let label = '';
+    let content = '';
+    
+    switch (type) {
+      case 'timeline':
+        label = 'Timeline Analysis';
+        content = `Archival carbon dating places the core materials firmly in ${event.era}.`;
+        break;
+      case 'witness':
+        label = 'Witness Testimony';
+        content = `A recovered journal entry mentions the primary figure was associated with ${event.region}.`;
+        break;
+      case 'location':
+        label = 'Geographic Survey';
+        content = `Soil samples and routing maps confirm the general region is ${event.region}.`;
+        break;
+      case 'context':
+        label = 'Historical Context';
+        content = `Background research indicates: ${event.detail}.`;
+        break;
+      case 'primary_source':
+        label = 'Primary Source Fragment';
+        content = `A fragmented telegram reads: "...${event.outcome.slice(0, 15)}..."`;
+        break;
+      case 'contradiction':
+        label = 'Archivist Pattern Warning';
+        content = `Recent discrepancies detected in records concerning ${FIELD_LABEL[corruptedField]}.`;
+        break;
+    }
+
+    return { id: `ev-${dayIndex}-${i}`, type, label, content };
+  });
+
+  // generate deterministic global stats
+  const solveRate = Math.floor(12 + rng() * 60); // 12% to 72%
+  const avgMins = Math.floor(2 + rng() * 6);
+  const avgSecs = Math.floor(rng() * 60);
+  const avgTimeStr = `${avgMins}m ${avgSecs}s`;
+  const commonWrongDoc = others[Math.floor(rng() * others.length)];
+
   return {
     dayIndex,
     caseNumber: dayIndex + 1,
@@ -259,6 +311,13 @@ export function caseForDay(dayIndex: number): DailyCase {
     falseValueText,
     trueValueText,
     difficulty,
+    evidence,
+    correctReasoning,
+    globalStats: {
+      solveRate,
+      avgTimeStr,
+      commonWrongDoc
+    }
   };
 }
 

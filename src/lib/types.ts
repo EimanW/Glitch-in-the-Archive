@@ -20,6 +20,36 @@ export interface HistoricalEvent {
 
 export type FactField = 'year' | 'person' | 'location' | 'number' | 'outcome' | 'detail';
 
+export type ConfidenceLevel = 40 | 60 | 75 | 90 | 100;
+
+export type ReasoningType = 
+  | 'timeline_mismatch'
+  | 'wrong_historical_figure'
+  | 'impossible_technology'
+  | 'wrong_location'
+  | 'contradicting_source'
+  | 'suspicious_number'
+  | 'motive_does_not_fit'
+  | 'other_inconsistency';
+
+export interface EvidenceCard {
+  id: string;
+  type: 'timeline' | 'witness' | 'location' | 'context' | 'primary_source' | 'contradiction';
+  label: string;
+  content: string;
+}
+
+export type SuspicionState = [number, number, number];
+
+export interface PlayerDeduction {
+  pickedDoc: number;
+  pickedSentence: number;
+  suspicion: SuspicionState;
+  confidence: ConfidenceLevel;
+  reasoning: ReasoningType;
+  openedEvidenceCount: number;
+}
+
 export interface Sentence {
   text: string;
   field: FactField | 'flavor';
@@ -42,4 +72,11 @@ export interface DailyCase {
   falseValueText: string;
   trueValueText: string;
   difficulty: number; // 0 easiest .. 6 hardest
+  evidence: EvidenceCard[];
+  correctReasoning: ReasoningType;
+  globalStats: {
+    solveRate: number;
+    avgTimeStr: string;
+    commonWrongDoc: number;
+  };
 }
