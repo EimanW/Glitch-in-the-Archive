@@ -1,9 +1,3 @@
-#  GLITCH in the Archive
-
-> Every document looks authentic.
-> One of them is lying.
-> Find the glitch before history is rewritten.
-
 <p align="center">
   <img src="./assets/logo.png" width="220" alt="Glitch in the Archive">
 </p>
