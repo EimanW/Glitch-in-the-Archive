@@ -8,7 +8,8 @@
 Every document looks authentic. One of them is lying.<br>
 Find the glitch before history is rewritten.
 </p>
-# Play
+
+## Play
 
 Every day you receive an archival case containing multiple historical documents.
 
