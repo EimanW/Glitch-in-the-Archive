@@ -46,3 +46,5 @@ two passes through an event play the same. To extend, append events following th
 
 All characters, ranks, and taunts are original IP. Rank ladder: Clerk → … → THE ADVERSARY.
 The Archivist's notes escalate with your streak. He is, fittingly, an algorithm.
+<img width="1241" height="1034" alt="Screenshot 2026-07-09 at 14 35 01" src="https://github.com/user-attachments/assets/981006fa-db0a-4aa9-88fe-ad649073a106" />
+<img width="1238" height="1024" alt="Screenshot 2026-07-09 at 14 35 10" src="https://github.com/user-attachments/assets/1f968676-43fc-4dda-9078-70eee6628b8b" />
